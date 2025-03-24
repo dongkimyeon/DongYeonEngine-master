@@ -14,6 +14,7 @@ public:
 
 private:
     Gdiplus::Image* mBackgroundImage; // PNG 이미지 객체
+    Gdiplus::Image* mLogoImage;
     ULONG_PTR mGdiplusToken;         // GDI+ 토큰
 
 };
