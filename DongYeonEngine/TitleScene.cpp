@@ -2,8 +2,12 @@
 #include "GameObject.h"
 #include "SceneManager.h"
 
+extern const UINT width;
+extern const UINT height;
+
 TitleScene::TitleScene()
     : mBackgroundImage(nullptr)
+    , mLogoImage(nullptr)
     , mGdiplusToken(0)
 {
     // GDI+ 초기화
@@ -18,7 +22,11 @@ TitleScene::~TitleScene()
         delete mBackgroundImage; // 이미지 객체 해제
         mBackgroundImage = nullptr;
     }
-
+    if (mLogoImage != nullptr)
+    {
+        delete mLogoImage; // 이미지 객체 해제
+        mLogoImage = nullptr;
+    }
     // GDI+ 종료
     if (mGdiplusToken != 0)
     {
@@ -29,9 +37,9 @@ TitleScene::~TitleScene()
 
 void TitleScene::Initialize()
 {
-
+    //이미지 로드
     mBackgroundImage = new Gdiplus::Image(L"resources/maintitle.png");
-    mLogoImage = new Gdiplus::Image(L"resources/TitleLogo.png");
+    mLogoImage = new Gdiplus::Image(L"resources/TitileLogo.png");
 
 }
 
@@ -61,8 +69,8 @@ void TitleScene::Render(HDC hdc)
     float bgImgHeight = static_cast<float>(mBackgroundImage->GetHeight());
 
     // 스케일링 비율 계산 (창에 맞게 축소)
-    float scaleX = static_cast<float>(1280 / bgImgWidth);
-    float scaleY = static_cast<float>(720 / bgImgHeight);
+    float scaleX = static_cast<float>(width / bgImgWidth);
+    float scaleY = static_cast<float>(height / bgImgHeight);
     float backGroundScale = min(scaleX, scaleY); // 더 작은 비율 선택 (창 안에 들어가게)
 
     // 이미지가 창보다 작을 경우 원본 크기 유지
@@ -73,23 +81,33 @@ void TitleScene::Render(HDC hdc)
     int destHeight = static_cast<int>(bgImgHeight * backGroundScale);
 
     // 중앙 정렬을 위한 오프셋
-    int destX = (1280 - destWidth) / 2;
-    int destY = (720 - destHeight) / 2;
+    int destX = (width - destWidth) / 2;
+    int destY = (height - destHeight) / 2;
 
-    // 백그라운드 이미지 그리기
-    graphics.DrawImage(mBackgroundImage, destX, destY, destWidth, destHeight);
-
+   
+    
     // 로고 이미지 그리기
     float logoWidth = static_cast<float>(mLogoImage->GetWidth());
     float logoHeight = static_cast<float>(mLogoImage->GetHeight());
 
-    // 로고 이미지를 중앙에 배치 (원하는 위치로 조정 가능)
-    int logoX = (1280 - static_cast<int>(logoWidth)) / 2;  // 로고를 수평 중앙에
-    int logoY = ((720 - static_cast<int>(logoHeight)) / 2 ) - 100;  // 로고를 수직 중앙에
+    // 로고 이미지에 백그라운드와 동일한 스케일링 적용
+    float logoScaleX = static_cast<float>(width / logoWidth);
+    float logoScaleY = static_cast<float>(height / logoHeight);
+    float logoScale = min(logoScaleX, logoScaleY); // 더 작은 비율 선택 (창 안에 들어가게)
 
-    // 로고 이미지 그리기 (원본 크기 유지)
-    graphics.DrawImage(mLogoImage, logoX, logoY + 100, static_cast<int>(logoWidth), static_cast<int>(logoHeight));
+    // 로고 이미지가 창보다 작을 경우 원본 크기 유지
+    if (logoScale > 1.0f) logoScale = 1.0f;
 
-    TextOut(hdc, 1280 / 2, 200, L"스페이스바를 눌러 다음 화면으로 넘어가세요", 23);
+    // 새 로고 이미지 크기 계산
+    int logoDestWidth = static_cast<int>(logoWidth * logoScale);
+    int logoDestHeight = static_cast<int>(logoHeight * logoScale);
+
+    // 로고 이미지를 화면 정중앙에 배치
+    int logoX = (width - logoDestWidth) / 2;  // 수평 중앙
+    int logoY = (height - logoDestHeight) / 2; // 수직 중앙
+
+    // 이미지 렌더링
+    graphics.DrawImage(mBackgroundImage, destX, destY, destWidth, destHeight);
+    graphics.DrawImage(mLogoImage, logoX, logoY, logoDestWidth, logoDestHeight);
 
 }

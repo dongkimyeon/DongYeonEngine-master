@@ -13,7 +13,7 @@ public:
     void Render(HDC hdc) override;
 
 private:
-    Gdiplus::Image* mBackgroundImage; // PNG 이미지 객체
+    Gdiplus::Image* mBackgroundImage;
     Gdiplus::Image* mLogoImage;
     ULONG_PTR mGdiplusToken;         // GDI+ 토큰
 
