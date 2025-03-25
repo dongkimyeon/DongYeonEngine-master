@@ -45,18 +45,20 @@ void GameObject::LateUpdate()
 void GameObject::Render(HDC hdc)
 {
 	//파랑 브러쉬 생성
-	HBRUSH blueBrush = CreateSolidBrush(RGB(rand() % 255, rand() % 255, rand() % 255));
+	HBRUSH randomBrush = CreateSolidBrush(RGB(rand() % 255, rand() % 255, rand() % 255));
 
 	// 파랑 브러쉬 DC에 선택 그리고 흰색 브러쉬 반환값 반환
-	HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, blueBrush);
+	HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, randomBrush);
 
-	HPEN redPen = CreatePen(PS_SOLID, 2, RGB(rand() % 255, rand() % 255, rand() % 255));
-	HPEN oldPen = (HPEN)SelectObject(hdc, redPen);
-	SelectObject(hdc, oldPen);
-
-	Ellipse(hdc, mX, mY, 100 + mX, 100 + mY);
+	
+	WCHAR Text[100];
+	wsprintf(Text, L"X : %d Y : %d", (int)Input::GetMousePosition().x, (int)Input::GetMousePosition().y);
+	TextOut(hdc, Input::GetMousePosition().x + 10, Input::GetMousePosition().y, Text, lstrlen(Text));
+	
+	
+	//Ellipse(hdc, Input::GetMousePosition().x , Input::GetMousePosition().y, 100 + Input::GetMousePosition().y, 100 + Input::GetMousePosition().y);
 
 	SelectObject(hdc, oldBrush);
-	DeleteObject(blueBrush);
-	DeleteObject(redPen);
+	DeleteObject(randomBrush);
+	
 }

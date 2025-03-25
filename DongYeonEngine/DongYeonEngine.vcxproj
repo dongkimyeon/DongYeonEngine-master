@@ -132,6 +132,7 @@
     <ClInclude Include="CommonInclude.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="LoadScenes.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
@@ -146,6 +147,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Input.h" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Math.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />

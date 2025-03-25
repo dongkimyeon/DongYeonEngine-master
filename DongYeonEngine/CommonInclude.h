@@ -6,10 +6,7 @@
 #include <string>
 #include <map>
 #include <stdio.h>
-
+#include "Math.h"
 #include <objidl.h>
 #include <gdiplus.h>
 #pragma comment(lib, "gdiplus.lib")
-
-//asdasdasd//asdfsfuisfsdfhsdfsfhsfhdsfjkfhskfhsdafjhsdfhjsdafsd
-//asdfsfafdffsfsfsafdsfsfsfsd

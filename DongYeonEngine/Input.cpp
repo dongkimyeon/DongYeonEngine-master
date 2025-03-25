@@ -1,7 +1,10 @@
 #include "Input.h"
 
+#include "Game.h"	
 
+extern Game GAME;
 std::vector<Input::Key> Input::Keys = {};
+Vector2 Input::mMousePosition = Vector2::One;
 
 int ASCII[(UINT)eKeyCode::End] =
 {
@@ -9,6 +12,7 @@ int ASCII[(UINT)eKeyCode::End] =
 	'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
 	'Z', 'X', 'C', 'V', 'B', 'N', 'M',
 	VK_LEFT, VK_RIGHT, VK_DOWN, VK_UP,
+	VK_LBUTTON, VK_MBUTTON, VK_RBUTTON,
 };
 
 void Input::Initailize()
@@ -44,13 +48,18 @@ void Input::updateKeys()
 
 void Input::updateKey(Input::Key& key)
 {
-	if (isKeyDown(key.keyCode))
+	if (GetFocus())
 	{
-		updateKeyDown(key);
+		if (isKeyDown(key.keyCode))
+			updateKeyDown(key);
+		else
+			updateKeyUp(key);
+
+		getMousePositionByWindow();
 	}
 	else
 	{
-		updateKeyUp(key);
+		clearKeys();
 	}
 }
 
@@ -76,4 +85,42 @@ void Input::updateKeyUp(Input::Key& key)
 		key.state = eKeyState::None;
 
 	key.bPressed = false;
+}
+void Input::getMousePositionByWindow()
+{
+	POINT mousePos = { };
+	if (!GetCursorPos(&mousePos))
+	{
+		OutputDebugStringW(L"Error: GetCursorPos failed\n");
+		return;
+	}
+
+	HWND hWnd = GAME.GetHwnd();
+	if (hWnd == nullptr)
+	{
+		OutputDebugStringW(L"Error: HWND is nullptr\n");
+		return;
+	}
+
+	if (!ScreenToClient(hWnd, &mousePos))
+	{
+		OutputDebugStringW(L"Error: ScreenToClient failed\n");
+		return;
+	}
+	
+	mMousePosition.x = static_cast<float>(mousePos.x);
+	mMousePosition.y = static_cast<float>(mousePos.y);
+
+}
+void Input::clearKeys()
+{
+	for (Key& key : Keys)
+	{
+		if (key.state == eKeyState::Down || key.state == eKeyState::Pressed)
+			key.state = eKeyState::Up;
+		else if (key.state == eKeyState::Up)
+			key.state = eKeyState::None;
+
+		key.bPressed = false;
+	}
 }

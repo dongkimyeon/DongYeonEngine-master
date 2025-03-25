@@ -15,6 +15,7 @@ public:
 	void Update();
 	void LateUpdate();
 	void Render();
+	HWND GetHwnd() { return mHwnd; }
 
 private:
 	void clearRenderTarget();
